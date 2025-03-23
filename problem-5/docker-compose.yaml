@@ -18,12 +18,10 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    env_file:
-      - .env
     environment:
-      - NODE_ENV="development"
+      - NODE_ENV=staging
       - Database__url=postgres://user:password@db:5432/db
-      - App__ENV="development"
+      - App__ENV=development
       - App__port=3000
       - App__host="localhost"
       - App__prefix="/api"

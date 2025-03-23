@@ -14,14 +14,17 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 RUN bun run build
-# Migration
-RUN bunx sequelize-cli db:migrate
 
 FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/dist/index.js .
 COPY --from=prerelease /usr/src/app/package.json .
+COPY --from=prerelease /usr/src/app/sequelize sequelize
+COPY --from=prerelease /usr/src/app/.sequelizerc .
+COPY --from=prerelease /usr/src/app/entrypoint.sh .
+RUN chmod +x entrypoint.sh
 
 USER bun
 EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "index.js" ]
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+CMD ["bun", "index.js"]
