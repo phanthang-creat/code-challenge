@@ -9,7 +9,6 @@ export enum Operators {
 	StartsWith = "_=",
 	DoesNotContain = "!@=",
 	DoesNotStartWith = "!_=",
-	DateBetween = "[]",
 }
 
 export const listOperators = [
@@ -23,7 +22,6 @@ export const listOperators = [
 	{ operator: Operators.StartsWith, meaning: "Starts with" },
 	{ operator: Operators.DoesNotContain, meaning: "Does not Contains" },
 	{ operator: Operators.DoesNotStartWith, meaning: "Does not Starts with" },
-	{ operator: Operators.DateBetween, meaning: "Only datetime, date between two date" },
 ];
 
 export const AUTHENTICATION_ERROR_MESSAGES = {

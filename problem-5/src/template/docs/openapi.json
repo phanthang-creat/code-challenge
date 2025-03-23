@@ -177,11 +177,12 @@
     "components": {
         "parameters": {
             "filters": {
-                "name": "filters",
+            "name": "filters",
                 "in": "query",
                 "schema": {
                     "type": "string"
-                }
+                },
+                "description": "Dynamic filter query. Support operators:, == (equal), != (not equal), > (greater than), >= (greater than or equal), < (less than), <= (less than or equal), @= (contains), @! (not contains), _= (start with), !_= (not start with), !@= (do not contains).\n\nExample: code==P001,price>100"
             },
             "page": {
                 "name": "page",

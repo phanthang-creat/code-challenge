@@ -3,8 +3,6 @@ import { initModels } from "../model/init-models";
 import { envConfig } from "@/root";
 
 const databaseConfig = envConfig.get("Database");
-console.log("🚀 ~ databaseConfig:", databaseConfig)
-
 const loggingFunc = async (sql: string) => {
 	if (envConfig.get("NODE_ENV") == "development") {
 		const { default: clc } = await import("cli-color");
