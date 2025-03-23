@@ -1,0 +1,28 @@
+{
+	"watch": ["src"],
+	"ext": "ts,mjs,json",
+	"exec": "bun ./src/index.ts",
+	"env": {
+		"====================== Server =======================": "",
+		"NODE_ENV": "development",
+		"App__ENV": "development",
+		"App__port": 3000,
+		"App__host": "localhost",
+		"App__prefix": "/api",
+		"====================== Database =======================": "",
+		"Database__dialect": "postgres",
+		"Database__name": "db",
+		"Database__username": "user",
+		"Database__password": "password",
+		"Database__host": "127.0.0.1",
+		"Database__port": 5434,
+		"====================== CORS =======================": "",
+		"CORS__origin": "*",
+		"CORS__methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+		"CORS__preflightContinue": false,
+		"CORS__optionsSuccessStatus": 204,
+		"====================== Swagger =======================": "",
+		"Swagger__json": "/docs/openapi.json",
+		"Swagger__url": "/api/docs"
+	}
+}
