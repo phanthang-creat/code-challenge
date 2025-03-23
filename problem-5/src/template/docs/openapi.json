@@ -1,0 +1,368 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Documentation",
+        "description": "API Documentation",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000"
+        }
+    ],
+    "paths": {
+        "/api/product": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get all products",
+                "operationId": "getAllProducts",
+                "parameters": [
+                    { "$ref": "#/components/parameters/filters" },
+                    { "$ref": "#/components/parameters/page" },
+                    { "$ref": "#/components/parameters/pageSize" },
+                    { "$ref": "#/components/parameters/sortField" },
+                    { "$ref": "#/components/parameters/sortOrder" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Create product",
+                "operationId": "createProduct",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductCreationForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/product/{id}": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get product by id",
+                "operationId": "getProductById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Update product by id",
+                "operationId": "updateProductById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductUpdateForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Delete product by id",
+                "operationId": "deleteProductById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "filters": {
+                "name": "filters",
+                "in": "query",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "page": {
+                "name": "page",
+                "in": "query",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "pageSize": {
+                "name": "pageSize",
+                "in": "query",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "sortField": {
+                "name": "sortField",
+                "in": "query",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "sortOrder": {
+                "name": "sortOrder",
+                "in": "query",
+                "schema": {
+                    "enum": [
+                        "ASC",
+                        "DESC"
+                    ]
+                }
+            }
+        },
+        "schemas": {
+            "ResponseDTO": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "number"
+                    },
+                    "message": {
+                        "type": "object"
+                    },
+                    "data": {
+                        "type": "object"
+                    },
+                    "timeStamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "violations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Violation"
+                        }
+                    }
+                }
+            },
+            "Violation": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "object"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "additionalData": {
+                        "type": "object"
+                    }
+                }
+            },
+            "Sort": {
+                "type": "object",
+                "properties": {
+                    "sortField": {
+                        "type": "string"
+                    },
+                    "sortOrder": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Filter": {
+                "type": "object",
+                "properties": {
+                    "field": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Product": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ProductCreationForm": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ProductUpdateForm": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

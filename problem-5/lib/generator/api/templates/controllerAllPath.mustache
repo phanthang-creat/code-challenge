@@ -1,0 +1,246 @@
+// types
+import type { Application } from "express";
+import type { Resource } from "express-automatic-routes";
+import type { Req, Res } from "@interfaces/IApi";
+import type { ActionCreationAttributes } from "@models/action";
+
+import { {{ modelUpperCase }}, {{ modelUpperCase }}CreationAttributes } from "@models/{{{ model }}}";
+import { {{ modelUpperCase }}Provider } from "@providers/{{{ module }}}";
+import { ActionProvider } from "@providers/system-management/action";
+import { queryModifier } from "@middlewares/query-modifier";
+import { authorization } from "@middlewares/auth";
+import { errorHandler } from "@services/helpers";
+
+export default (_express: Application) => {
+  const {{ modelLowerCase }}Provider = new {{ modelUpperCase }}Provider();
+	const actionProvider = new ActionProvider();
+  return <Resource>{
+    /**
+     * @openapi
+     * tags:
+     *   name: {{ swaggerTag }}
+     *   description: {{ modelUpperCase }} management
+     */
+    get: {
+      middleware: [queryModifier()],
+      handler: async (req: Req<{{ modelUpperCase }}>, res: Res) => {
+        /**
+         * @openapi
+         * /{{{ apiPathLink }}}:
+         *   get:
+         *     operationId: get{{ operation }}
+         *     tags: [{{ swaggerTag }}]
+         *     description: Get
+         *     parameters:
+         *       - $ref: "#/components/parameters/filters"
+         *       - $ref: "#/components/parameters/sortOrder"
+         *       - $ref: "#/components/parameters/sortField"
+         *       - $ref: "#/components/parameters/page"
+         *       - $ref: "#/components/parameters/pageSize"
+         *     security:
+         *       - Bearer: []
+         *     responses:
+         *       200:
+         *         description: Successfully fetched data
+         *         content:
+         *          application/json:
+         *            schema:
+         *              allOf:
+         *                - $ref: '#/components/schemas/responseGetAllData'
+         *                - type: object
+         *                  properties:
+         *                    responseData:
+         *                      type: object
+         *                      properties:
+         *                        rows:
+         *                          type: array
+         *                          items:
+         *                            $ref: '#/components/schemas/{{ modelUpperCase }}'
+         */
+
+        await getAll{{ modelUpperCase }}(req, res);
+      },
+    },
+
+    post: {
+      middleware: authorization(),
+      handler: async (req: Req<{{ modelUpperCase }}CreationAttributes[]>, res: Res) => {
+        /**
+         * @openapi
+         * /{{{ apiPathLink }}}:
+         *   post:
+         *     operationId: post{{ operation }}
+         *     tags: [{{ swaggerTag }}]
+         *     description: Post
+         *     security:
+         *       - Bearer: []
+         *     requestBody:
+         *       content:
+         *        application/json:
+         *          schema:
+         *            type: array
+         *            items:
+         *              $ref: '#/components/schemas/{{ modelUpperCase }}Mutate'
+         *     responses:
+         *       200:
+         *         description: Success
+         *         content:
+         *           application/json:
+         *            schema:
+         *              allOf:
+         *                - $ref: '#/components/schemas/Response'
+         *                - type: object
+         *                  properties:
+         *                    responseData:
+         *                      type: array
+         *                      items:
+         *                        $ref: '#/components/schemas/{{ modelUpperCase }}'
+         *
+         */
+        await postBulk{{ modelUpperCase }}(req, res);
+      },
+    },
+
+    put: {
+      middleware: [authorization(), queryModifier()],
+      handler: async (req: Req<{{ modelUpperCase }}>, res: Res) => {
+        /**
+         * @openapi
+         * /{{{ apiPathLink }}}:
+         *   put:
+         *     operationId: put{{ operation }}
+         *     tags: [{{ swaggerTag }}]
+         *     description: Put
+         *     security:
+         *       - Bearer: []
+         *     parameters:
+         *       - $ref: "#/components/parameters/filtersMutate"
+         *     requestBody:
+         *       content:
+         *        application/json:
+         *          schema:
+         *            $ref: '#/components/schemas/{{ modelUpperCase }}Mutate'
+         *     responses:
+         *       200:
+         *         description: Success
+         *         schema:
+         *          $ref: '#/components/schemas/Response'
+         *
+         */
+        await putBulk{{ modelUpperCase }}(req, res);
+      },
+    },
+
+    delete: {
+      middleware: [authorization(), queryModifier()],
+      handler: async (req: Req<{{ modelUpperCase }}>, res: Res) => {
+        /**
+         * @openapi
+         * /{{{ apiPathLink }}}:
+         *   delete:
+         *     operationId: delete{{ operation }}
+         *     tags: [{{ swaggerTag }}]
+         *     description: Delete
+         *     security:
+         *       - Bearer: []
+         *     parameters:
+         *       - $ref: "#/components/parameters/filtersMutate"
+         *     responses:
+         *       200:
+         *         description: Success
+         *         schema:
+         *          $ref: '#/components/schemas/Response'
+         *
+         */
+        await deleteBulk{{ modelUpperCase }}(req, res);
+      },
+    },
+  };
+
+  async function getAll{{ modelUpperCase }}(req: Req<{{ modelUpperCase }}>, res: Res): Promise<void> {
+    try {
+      const data = await {{ modelLowerCase }}Provider.getAll(req.payload);
+      return res.sendOk({ data });
+    } catch (error) {
+      return res.sendError({ err: error });
+    }
+  }
+
+  async function postBulk{{ modelUpperCase }}(req: Req<{{ modelUpperCase }}CreationAttributes[]>, res: Res): Promise<void> {
+      const history = {
+				initiator_id: req.user.id,
+        type: "INSERT",
+        category: "{{ modelUpperCase }}".toUpperCase(),
+        description: {
+          vi: "Thêm mới nhiều {{ modelLowerCase }}",
+          en: "Add new many {{ modelLowerCase }}",
+        },
+				created_at: new Date(),
+      } as ActionCreationAttributes;
+    try {
+      const data = await {{ modelLowerCase }}Provider.bulkCreate( 
+        req.body.map((body) => ({
+          ...body,
+          created_at: new Date(),
+          created_by: req.user.id,
+        })));
+        history.add_info = data
+        history.is_success=true
+      res.sendOk({ data });
+    } catch (error) {
+      history.is_success=false
+      res.sendError({ err: error });
+    }
+    await actionProvider.post(history).catch(async (err) => await errorHandler(err, "{{ modelUpperCase }}", history))
+    return
+  }
+
+  async function putBulk{{ modelUpperCase }}(req: Req<{{ modelUpperCase }}>, res: Res): Promise<void> {
+    const history = {
+				initiator_id: req.user.id,
+        type: "UPDATE",
+        category: "{{ modelUpperCase }}".toUpperCase(),
+        description: {
+          vi: "Chỉnh sửa nhiều {{ modelLowerCase }}",
+          en: "Edit many {{ modelLowerCase }}",
+        },
+				created_at: new Date(),
+      } as ActionCreationAttributes;
+    try {
+      const data = await {{ modelLowerCase }}Provider.bulkUpdate(
+        req.payload.where,
+        req.body
+      );
+      history.is_success = true
+      res.sendOk({ data });
+    } catch (error) {
+      history.is_success = false
+      res.sendError({ err: error });
+    }
+    await actionProvider.post(history).catch(async (err) => await errorHandler(err, "{{ modelUpperCase }}", history))
+    return
+  }
+
+  async function deleteBulk{{ modelUpperCase }}(req: Req<{{ modelUpperCase }}>, res: Res): Promise<void> {
+    const history = {
+				initiator_id: req.user.id,
+        type: "DELETE",
+        category: "{{ modelUpperCase }}".toUpperCase(),
+        description: {
+          vi: "Xoá nhiều nhiều {{ modelLowerCase }}",
+          en: "Delete many {{ modelLowerCase }}",
+        },
+				created_at: new Date(),
+      } as ActionCreationAttributes;
+    try {
+      const data = await {{ modelLowerCase }}Provider.bulkDelete(req.payload.where);
+      history.is_success = true
+      res.sendOk({ data });
+    } catch (error) {
+      history.is_success = false
+      res.sendError({ err: error });
+    }
+    await actionProvider.post(history).catch(async (err) => await errorHandler(err, "{{ modelUpperCase }}", history))
+    return
+  }
+};
