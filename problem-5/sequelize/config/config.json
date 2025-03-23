@@ -5,6 +5,14 @@
     "database": "db",
     "host": "127.0.0.1",
     "dialect": "postgres",
+    "port": 5434
+  },
+  "staging": {
+    "username": "user",
+    "password": "password",
+    "database": "db",
+    "host": "db",
+    "dialect": "postgres",
     "port": 5432
   }
 }
