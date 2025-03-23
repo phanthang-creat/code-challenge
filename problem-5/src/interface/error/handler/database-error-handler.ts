@@ -63,7 +63,7 @@ export class DatabaseErrorHandler implements IErrorHandler {
 		}
 
 		if (error instanceof ForeignKeyConstraintError) {
-			const fields = error?.fields ? Object.keys(error?.fields) : getFieldsFromDetails(error.original?.["detail"]);
+			const fields = error?.fields ? Object.keys(error?.fields) : getFieldsFromDetails((error.original as never)?.['detail']);
 			return [
 				{
 					message: {

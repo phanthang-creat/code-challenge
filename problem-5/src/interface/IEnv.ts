@@ -33,4 +33,5 @@ export type DatabaseConfig = {
     password: string;
     host: string;
     port: number;
+    url: string;
 }

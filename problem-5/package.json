@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "start:dev": "nodemon",
-    "gen:db": "bun lib/generator/db/index.ts"
+    "gen:db": "bun lib/generator/db/index.ts",
+    "build": "bun lib/builder/index.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
@@ -13,19 +14,19 @@
     "globals": "^16.0.0",
     "@types/compression": "^1.7.5",
     "bun": "^1.2.5",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/cli-color": "^2.0.6",
+    "@types/express": "^5.0.0",
+    "@types/module-alias": "^2.0.4",
+    "@types/mustache": "^4.2.5",
+    "@types/nconf": "^0.10.7",
     "typescript-eslint": "^8.26.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@types/cli-color": "^2.0.6",
-    "@types/express": "^5.0.0",
-    "@types/module-alias": "^2.0.4",
-    "@types/mustache": "^4.2.5",
-    "@types/nconf": "^0.10.7",
-    "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.8",
     "babel-register": "^6.26.0",
     "body-parser": "^1.20.3",
     "cli-color": "^2.0.4",
@@ -33,11 +34,11 @@
     "dayjs": "^1.11.13",
     "esbuild": "^0.25.1",
     "express": "^4.21.2",
-    "express-automatic-routes": "^1.1.0",
     "joi": "^17.13.3",
     "module-alias": "^2.2.3",
     "mustache": "^4.2.0",
     "nconf": "^0.12.1",
+    "nodemon": "^3.1.9",
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
     "rimraf": "^6.0.1",

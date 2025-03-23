@@ -1,10 +1,10 @@
 import { Req, ResponseDTO } from "@interface/IApi";
-import { schemaValidator } from "@middleware/validator/schema";
-import updateProductDto from "@middleware/validator/schema/product/update-product.dto";
-import { validateId } from "@middleware/validator/uuid";
+// import { schemaValidator } from "@middleware/validator/schema";
+// import updateProductDto from "@middleware/validator/schema/product/update-product.dto";
+// import { validateId } from "@middleware/validator/uuid";
 import { Product } from "@repository/model/product";
 import { ProductService } from "@service/product";
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 // import { Resource } from "express-automatic-routes";
 
 export default () => {
@@ -45,24 +45,8 @@ export default () => {
     }
 
     return {
-        middleware: [validateId("product_id")],
-        get: {
-            middleware: [],
-            handler: async (request: Request, response: Response, next: NextFunction) => {
-                await get(request as Req<Product>, response, next);
-            },
-        },
-        put: {
-            middleware: [schemaValidator(updateProductDto)],
-            handler: async (request: Request, response: Response, next: NextFunction) => {
-                await put(request as Req<Product>, response, next);
-            },
-        },
-        delete: {
-            middleware: [],
-            handler: async (request: Request, response: Response, next: NextFunction) => {
-                await destroy(request as Req<Product>, response, next);
-            },
-        }
+        get,
+        put,
+        destroy,
     };
 };

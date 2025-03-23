@@ -2,19 +2,10 @@ import { ForeignKeyConstraintError, UniqueConstraintError } from "sequelize";
 import ValidationError from "sequelize/lib/errors/validation-error";
 import { DatabaseErrorAdditionalData } from "../handler/database-error-handler";
 
-export const dataErrorMessagesHandler = (error: any, additionalData?: DatabaseErrorAdditionalData) => {
+export const dataErrorMessagesHandler = (error: unknown, additionalData?: DatabaseErrorAdditionalData) => {
 	if (error instanceof ValidationError) {
 		if (error instanceof UniqueConstraintError) {
 			console.log("🚀 ~ dataErrorMessagesHandler ~ additionalData:", additionalData);
-			if (additionalData?.formFields && additionalData?.errorFields) {
-				const fieldName = additionalData.errorFields?.map((key) => {
-					return additionalData?.formFields?.find((field) => field.code.toUpperCase() === key.toUpperCase())?.name;
-				});
-				return {
-					en: `${fieldName.length > 1 ? "Fields" : "Field"} ${fieldName.map((name) => name["en"]).join(", ")} already exists`,
-					vi: `${fieldName.map((name) => name["vi"]).join(", ")} đã tồn tại`,
-				};
-			}
 			if (additionalData?.errorFields) {
 				return {
 					en: `Field ${additionalData.errorFields.join(", ")} already exists`,
@@ -35,15 +26,7 @@ export const dataErrorMessagesHandler = (error: any, additionalData?: DatabaseEr
 	}
 
 	if (error instanceof ForeignKeyConstraintError) {
-		if (additionalData?.formFields && additionalData?.errorFields) {
-			const fieldName = additionalData.errorFields.map((key) => {
-				return additionalData.formFields.find((field) => field.code.toUpperCase() === key.toUpperCase())?.name;
-			});
-			return {
-				en: `Foreign key constraint error on ${fieldName.length > 1 ? "fields" : "field"} ${fieldName.map((name) => name["en"]).join(", ")}`,
-				vi: `Lỗi ràng buộc khóa ngoại trên ${fieldName.map((name) => name["vi"]).join(", ")}`,
-			};
-		} else if (additionalData?.errorFields) {
+		if (additionalData?.errorFields) {
 			return {
 				en: `Foreign key constraint error on ${additionalData.errorFields.length > 1 ? "fields" : "field"} ${additionalData.errorFields.join(", ")}`,
 				vi: `Lỗi ràng buộc khóa ngoại trên trường ${additionalData.errorFields.join(", ")}`,

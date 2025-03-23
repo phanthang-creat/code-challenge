@@ -14,7 +14,10 @@ import { validate as uuidValidate } from "uuid";
 export function validateId(...args: string[]) {
 	if (args.length === 0) args.push("id");
 	return (req: Request, res: Response, next: NextFunction) => {
-		for (const key of args) if (!uuidValidate(req.params[key])) return res.send({ message: "Invalid id" });
+		for (const key of args) if (!uuidValidate(req.params[key])) {
+			res.send({ message: "Invalid id" });
+			return;
+		}
 		next();
         return;
 	};

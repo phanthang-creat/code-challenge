@@ -7,7 +7,7 @@
       "@service/*": ["service/*"],
       "@utils/*": ["utils/*"],
       "@controller/*": ["controller/*"],
-      "@provider/*": ["provider/*"],
+      "@provider/*": ["repository/provider/*"],
       "@/*": ["*"]
     },
     "baseUrl": "src",
@@ -36,7 +36,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
   },
   "include": ["src"],
   "exclude": ["node_modules", "node_modules/*"]

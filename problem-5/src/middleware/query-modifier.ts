@@ -1,12 +1,14 @@
 import { Model, Op, WhereOptions } from "sequelize";
-import { Response, NextFunction } from "express";
-import { Req } from "@interface/IApi";
+import { Response, NextFunction, Request } from "express";
 import { generateCondition, generateConditionExtra } from "@repository/database/query";
 import { QuerySpecialField, SequelizeApiPaginatePayload } from "@repository/database/type";
+import { Req } from "@interface/IApi";
 export default queryModifier;
 
 export function queryModifier<T extends Model>(opts?: QueryModifierOptions<T>) {
-	return (req: Req<T>, _res: Response, next: NextFunction) => {
+	return (req: Request, _res: Response, next: NextFunction) => {
+		const r = req as Req<T>; 
+
 		const payload: SequelizeApiPaginatePayload<T> = {
 			pageSize: parseInt(req.query['pageSize']?.toString() ?? "-1"),
 			page: parseInt(req.query['page']?.toString() ?? "-1"),
@@ -18,7 +20,7 @@ export function queryModifier<T extends Model>(opts?: QueryModifierOptions<T>) {
 
 		const arrFilters = payload.rawFilter?.split(",") ?? [];
 		payload.where = {
-			[Op.and]: [...(req.payload?.where?.[Op.and] ?? []), ...arrFilters.map(transformFilter)].filter(Boolean) as WhereOptions<T>[],
+			[Op.and]: [...(r.payload?.where?.[Op.and] ?? []), ...arrFilters.map(transformFilter)].filter(Boolean) as WhereOptions<T>[],
 		};
 
 		if (payload.page && payload.page < 0) payload.page = 1;
@@ -26,7 +28,7 @@ export function queryModifier<T extends Model>(opts?: QueryModifierOptions<T>) {
 		// if (!payload.sortField) payload.sortField = undefined;
 		// if (!payload.sortOrder) payload.sortOrder = undefined;
 
-		req.payload = payload;
+		r.payload = payload;
 		next();
 	};
 

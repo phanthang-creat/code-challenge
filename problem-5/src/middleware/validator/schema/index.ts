@@ -1,11 +1,10 @@
 import { ErrorProcessor } from "@interface/error";
-import { ErrorResponseDTO, Req } from "@interface/IApi";
-import { NextFunction, Response } from "express";
+import { ErrorResponseDTO } from "@interface/IApi";
+import { NextFunction, Response, Request } from "express";
 import Joi from "joi";
-import { Model } from "sequelize";
 
 export const schemaValidator = (schema: Joi.ObjectSchema | Joi.ArraySchema) => {
-	return async (req: Req<Model>, res: Response, next: NextFunction) => {
+	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			req.body = await schema.validateAsync(req.body);
 			next();

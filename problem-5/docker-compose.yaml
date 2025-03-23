@@ -9,3 +9,29 @@ services:
       - "5434:5432"
     volumes:
       - ./data/db:/var/lib/postgresql/data
+    
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV="development"
+      - Database__url=postgres://user:password@db:5432/db
+      - App__ENV="development"
+      - App__port=3000
+      - App__host="localhost"
+      - App__prefix="/api"
+      - CORS__origin="*"
+      - CORS__methods="GET,HEAD,PUT,PATCH,POST,DELETE"
+      - CORS__preflightContinue=false
+      - CORS__optionsSuccessStatus=204
+      - Swagger__json="/docs/openapi.json"
+      - Swagger__url="/api/docs"
+    links:
+      - db:db

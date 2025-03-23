@@ -5,11 +5,12 @@ import { AppConfig, SwaggerConfig } from "@interface/IEnv";
 import bodyParser from "body-parser";
 import compression from "compression";
 import express, { NextFunction, Request, Response } from "express";
-import autoroutes from "express-automatic-routes";
+// import autoroutes from "express-automatic-routes";
 import { OAS3Definition } from "swagger-jsdoc";
 import { serve, setup } from "swagger-ui-express";
 import { envConfig } from "./root";
 import swaggerDocument from "./template/docs/openapi.json";
+import router from "@controller/routes";
 export const SWAGGER = {
     SWAGGER_ROUTER: "/swagger/index",
     SWAGGER_PATH: "/docs/openapi.json",
@@ -22,10 +23,8 @@ async function initServer(config: { app: AppConfig; swagger: SwaggerConfig }) {
     app.use(bodyParser.json({ type: "application/json" }));
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    autoroutes(app, {
-        dir: "./controller",
-        log: true,
-    });
+    app.use(config.app.prefix, router);
+    
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
         const processedError = ErrorProcessor.getInstance().process(err);
